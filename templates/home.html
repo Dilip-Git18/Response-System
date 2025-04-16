@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<section id="home" class="section home">
+    
+    <img src="{{ url_for('static', filename='images/B15.jpg') }}" alt="Background Image" id="background-image">
+    
+    <div class="content">
+        <h1>Welcome to HealthyCare Hospital</h1>
+        <p> HealthyCare Hospital
+            provides world-class healthcare with a patient-first approach. Our website offers easy access to appointment scheduling, medical services, doctor profiles, and emergency care information.
+        </p>
+        <a href="{{ url_for('services') }}" class="cta-btn">Explore Our Services</a>
+
+    </div>
+</section>
+
+
+<div class="text-center">
+    <h1 class="display-4 text-primary mb-4"></h1>
+    <p class="lead mb-4">Your health is our priority. We are here to provide the best care for you and your family.</p>
+</div>
+
+
+{% endblock %}

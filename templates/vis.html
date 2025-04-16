@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ambulance Route Graph</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vis.css') }}">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+    <h2>Ambulance Route Graph</h2>
+
+    <div class="container">
+        <div id="network"></div>
+
+        <div id="info-box" style="display: none;">
+            <h3>Information for <span id="info-node"></span></h3>
+            <p><strong>Phone:</strong> <span id="info-phone"></span></p>
+            <p><strong>Capacity:</strong> <span id="info-capacity"></span></p>
+            <p><strong>Specialties:</strong> <span id="info-specialties"></span></p>
+            <p><strong>Website:</strong> <a id="info-website" href="#">N/A</a></p>
+            <p><strong><span id="info-status">Not available</span></p>
+        </div>
+        
+
+    <script id="graph-data" type="application/json">
+        {
+            "nodes": {{ nodes | tojson | safe }},
+            "edges": {{ edges | tojson | safe }}
+        }
+    </script>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

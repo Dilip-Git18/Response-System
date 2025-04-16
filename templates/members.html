@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/members.css') }}">
+
+<div class="members-container">
+    <h2>Our Members</h2>
+    <p>Meet our experienced and compassionate Project team.</p>
+
+    <div class="member-grid">
+        <div class="member-card">
+            <img src="{{ url_for('static', filename='images/doc1.jpg') }}" alt="Dr. Alex Morgan">
+            <h3>Dr. Alex Morgan</h3>
+            <p>Lead Developer</p>
+        </div>
+
+        <div class="member-card">
+            <img src="{{ url_for('static', filename='images/Doc2.jpg') }}" alt="Sarah Lee">
+            <h3>Cristalia Flinn</h3>
+            <p>Data Analyst</p>
+        </div>
+
+        <div class="member-card">
+            <img src="{{ url_for('static', filename='images/Doc3.avif') }}" alt="John Carter">
+            <h3>Joe Kettleburg</h3>
+            <p>System Engineer</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

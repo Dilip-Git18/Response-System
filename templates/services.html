@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
+
+<!-- Main Section with Heading and Image -->
+<div class="services-header">
+    <h2>Our Services</h2>
+    <p>We offer 24/7 emergency, diagnostics, surgery, and maternity care.</p>
+    <img src="{{ url_for('static', filename='images/services.png') }}" class="img-fluid" alt="Services">
+</div>
+
+<!-- Button Containers with Cards -->
+<div class="button-grid">
+  <div class="button-card">
+    <h3>Dijkstra Route</h3>
+    <p>Calculate the shortest route between two medical nodes using Dijkstra's algorithm.</p>
+    <a href="/dijkstra" class="button">Open Route Finder</a>
+  </div>
+
+  <div class="button-card">
+    <h3>Live Map Tracker</h3>
+    <p>Track your location and get real-time routing to facilities using the Leaflet map.</p>
+    <a href="/live_map" class="button">Open Live Map</a>
+  </div>
+
+  <div class="button-card">
+    <h3>Graph Visualization</h3>
+    <p>Visualize the ambulance network and explore node data interactively.</p>
+    <a href="/vis" class="button">Open Graph View</a>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+}
+
+h2 {
+    margin: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+#network {
+    width: 1200px; /* Wider graph container */
+    height: 600px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
+}
+
+#info-box {
+    display: none;
+    margin-left: 20px;
+    width: 250px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#info-box h3 {
+    margin-top: 0;
+}

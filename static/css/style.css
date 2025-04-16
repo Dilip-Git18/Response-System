@@ -1,0 +1,12 @@
+body {
+  background-color: linear-gradient(to right, #f0f0f0, #e6f7ff);
+}
+
+h1, h2 {
+  color: #0275d8;
+}
+
+img {
+  margin-top: 20px;
+  border-radius: 10px;
+}

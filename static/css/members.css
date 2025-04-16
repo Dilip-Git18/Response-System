@@ -1,0 +1,45 @@
+.members-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.member-grid {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.member-card {
+  background-color: #f9f9f9;
+  padding: 20px;
+  width: 250px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.member-card:hover {
+  transform: translateY(-5px);
+}
+
+.member-card img {
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  height: 200px;
+}
+
+.member-card h3 {
+  margin-top: 15px;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.member-card p {
+  font-size: 0.95em;
+  color: #666;
+}

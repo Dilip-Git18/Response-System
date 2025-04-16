@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Search with Live Location</title>
+
+    <!-- Your custom stylesheets -->
+    <link rel="stylesheet" href="static/styles.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/live_map.css') }}">
+
+    <!-- Leaflet and other map-related stylesheets -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+</head>
+<body>
+    <h1>Find Route from Your Current Location to a Destination</h1>
+    
+    <!-- Map container -->
+    <div id="map"></div>
+
+    <!-- Input for destination location and buttons -->
+    <div class="route-input-container">
+        <input type="text" id="end-location" placeholder="Enter destination location" />
+        <button onclick="findRoute()">Find Route</button>
+        <button onclick="clearRoute()">Clear Route</button>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loading" style="display: none;">Loading...</div>
+
+    <!-- Link to Leaflet and other scripts -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+    <!-- Link to external JavaScript file -->
+    <script src="static/js/map.js"></script>
+
+</body>
+</html>

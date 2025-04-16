@@ -1,0 +1,7 @@
+<svg id="MDI_checkbox-marked-circle-outline" data-name="MDI / checkbox-marked-circle-outline" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="Boundary" fill="#31c5fe" stroke="rgba(0,0,0,0)" stroke-width="1" opacity="0">
+    <rect width="24" height="24" stroke="none"/>
+    <rect x="0.5" y="0.5" width="23" height="23" fill="none"/>
+  </g>
+  <path id="Path_checkbox-marked-circle-outline" data-name="Path / checkbox-marked-circle-outline" d="M20,12a8.006,8.006,0,1,1-5.8-7.69l1.57-1.57A9.822,9.822,0,0,0,12,2,10,10,0,1,0,22,12M7.91,10.08,6.5,11.5,11,16,21,6,19.59,4.58,11,13.17Z" fill="#31c5fe"/>
+</svg>
