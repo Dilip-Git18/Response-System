@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ambulance Route Graph</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vis.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/graph_title.css') }}">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+    <h2>Ambulance Route Graph</h2>
+
+    <div class="info-container">
+        <div class="info-title">🚑 Shortest Path:</div>
+        <div class="info-path">{{ " → ".join(path) }}</div>
+    </div>
+
+    <!-- Graph container -->
+    <div class="network-wrapper">
+        <div id="network"></div>
+    </div>
+
+    <script type="application/json" id="graph-data">
+        {
+            "nodes": {{ nodes | tojson | safe }},
+            "edges": {{ edges | tojson | safe }},
+            "path": {{ path | tojson | safe }}
+        }
+    </script>
+
+    <script>
+        const graphData = JSON.parse(document.getElementById('graph-data').textContent);
+        const path = graphData.path;
+
+        // Create a set of edges from the shortest path
+        const pathEdges = new Set();
+        for (let i = 0; i < path.length - 1; i++) {
+            pathEdges.add(path[i] + '-' + path[i + 1]);
+            pathEdges.add(path[i + 1] + '-' + path[i]);
+        }
+
+
+        
+        // Process edges and apply styles
+        const styledEdges = graphData.edges.map(edge => {
+            const edgeKey = edge.from + '-' + edge.to;
+            const reverseEdgeKey = edge.to + '-' + edge.from;
+
+            if (pathEdges.has(edgeKey) || pathEdges.has(reverseEdgeKey)) {
+                // Highlight this edge (part of the shortest path)
+                return {
+                    ...edge,
+                    color: { color: '#2E8B57' },  // Set color to green
+                    width: 4,  // Increase width
+                    arrows: ''  // Remove arrows from the path
+                };
+            } else {
+                // Default edge color for non-path edges
+                return { 
+                    ...edge, 
+                    color: { color: '#ccc' }, 
+                    width: 1, 
+                    arrows: ''  // Ensure no arrows on non-path edges as well
+                };
+            }
+        });
+
+        // Initialize and render the graph
+        const container = document.getElementById('network');
+        const data = {
+            nodes: new vis.DataSet(graphData.nodes),
+            edges: new vis.DataSet(styledEdges)
+        };
+        const options = {
+            nodes: {
+                shape: 'dot',
+                size: 16,
+                font: { size: 18 }
+            },
+            edges: {
+                font: { align: 'middle' },
+                smooth: true
+            },
+            interaction: { hover: true },
+            physics: { stabilization: true }
+        };
+
+        new vis.Network(container, data, options);
+    </script>
+</body>
+</html>

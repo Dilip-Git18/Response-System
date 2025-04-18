@@ -126,6 +126,17 @@ def result_page():
     message = request.args.get('message')
     path = request.args.get('path')
     return render_template('result.html', message=message, path=path)
+@app.route('/path_graph')
+def path_graph():
+    path = request.args.get('path', '')
+    path = path.split(" → ") if path else []
+    nodes, edges = fetch_graph_data()
+
+    # Highlight source and destination nodes
+    highlighted_nodes = {"source": path[0] if path else None, "destination": path[-1] if path else None}
+    
+    return render_template('path_graph.html', nodes=nodes, edges=edges, path=path, highlighted_nodes=highlighted_nodes)
+
 
 @app.route('/node_info/<node>')
 def node_info(node):
@@ -145,6 +156,8 @@ def node_info(node):
         })
     else:
         return jsonify({'error': 'No info found'})
+    
+
     
 
     

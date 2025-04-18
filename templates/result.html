@@ -3,29 +3,25 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Route Result</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
 </head>
 
 <body class="result-page">
-
     <h1>Route Calculation Result</h1>
 
     <div class="result-container">
         <p class="lead">{{ message }}</p>
 
         {% if path and path != 'None' %}
-        <div class="success-message">✅ <strong>Optimal Route:</strong> {{ path }}</div>
-
-
+            <div class="success-message">✅ <strong>Optimal Route:</strong> {{ path }}</div>
+            <a href="{{ url_for('path_graph') }}?path={{ path | urlencode }}" class="button">Show Path on Graph</a>
         {% else %}
-        <div class="error-message">❌ No valid route found!</div>
+            <div class="error-message">❌ No valid route found!</div>
         {% endif %}
 
         <a href="/dijkstra" class="button">Go Back</a>
     </div>
-
 </body>
 
 </html>
