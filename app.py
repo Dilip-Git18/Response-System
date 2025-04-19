@@ -4,14 +4,20 @@ import heapq
 
 app = Flask(__name__)
 
-# Database connection
+# ========================
+# Database Connection
+# ========================
 def get_db_connection():
+    """Connect to the ambulance.db SQLite database."""
     conn = sqlite3.connect('database/ambulance.db')
     conn.row_factory = sqlite3.Row
     return conn
 
+# ========================
 # Dijkstra's Algorithm
+# ========================
 def dijkstra(start, end):
+    """Compute the shortest path using Dijkstra's algorithm."""
     conn = get_db_connection()
     edges = conn.execute('SELECT start_node, end_node, distance FROM distances').fetchall()
     conn.close()
@@ -32,8 +38,7 @@ def dijkstra(start, end):
             while current_node is not None:
                 path.append(current_node)
                 current_node = previous_nodes[current_node]
-            path.reverse()
-            return distances[end], path
+            return distances[end], list(reversed(path))
 
         for neighbor, weight in graph.get(current_node, []):
             distance = current_distance + weight
@@ -44,8 +49,11 @@ def dijkstra(start, end):
 
     return float("inf"), []
 
-# Fetch graph data for vis-network
+# ========================
+# Fetch Graph Data for vis-network
+# ========================
 def fetch_graph_data():
+    """Retrieve nodes and edges from database for visualization."""
     conn = sqlite3.connect('database/ambulance.db')
     cursor = conn.cursor()
     cursor.execute("SELECT start_node, end_node, distance FROM distances")
@@ -56,62 +64,67 @@ def fetch_graph_data():
     edges = []
 
     for start, end, distance in rows:
-        nodes.add(start)
-        nodes.add(end)
+        nodes.update([start, end])
         edges.append({'from': start, 'to': end, 'label': str(distance)})
 
     node_list = [{'id': node, 'label': node} for node in nodes]
     return node_list, edges
 
-
+# ========================
+# Page Routes
+# ========================
 @app.route('/')
 def home():
+    """Render the home page."""
     return render_template('home.html')
 
 @app.route('/about')
 def about():
+    """Render the about page."""
     return render_template('about.html')
 
 @app.route('/services')
 def services():
+    """Render the services page."""
     return render_template('services.html')
 
 @app.route('/members')
 def doctors():
+    """Render the members (doctors) page."""
     return render_template('members.html')
 
 @app.route('/contact')
 def contact():
+    """Render the contact page."""
     return render_template('contact.html')
 
 @app.route('/gallary')
 def gallary():
-    return render_template('gallary.html',block_range=range(20))
-
-
-# Routes
-@app.route('/')
-def index():
-    nodes, edges = fetch_graph_data()
-    return render_template('services.html', nodes=nodes, edges=edges)
+    """Render the gallary page with 20 blocks."""
+    return render_template('gallary.html', block_range=range(20))
 
 @app.route('/dijkstra')
 def dijkstra_page():
+    """Render the Dijkstra input page."""
     return render_template('dijkstra.html')
 
 @app.route('/live_map')
 def leaflet_map():
+    """Render the live map page."""
     return render_template('live_map.html')
-
 
 @app.route('/vis')
 def vis_graph():
-    nodes, edges = fetch_graph_data()  # Fetch the data from database
+    """Render the full vis-network graph page."""
+    nodes, edges = fetch_graph_data()
     return render_template('vis.html', nodes=nodes, edges=edges)
 
-
+# ========================
+# Form Processing Routes
+# ========================
 @app.route('/get_distance', methods=['POST'])
 def get_distance():
+    """Process Dijkstra form submission and redirect to result."""
     source = request.form['source']
     destination = request.form['destination']
     distance, path = dijkstra(source, destination)
@@ -123,23 +136,26 @@ def get_distance():
 
 @app.route('/result')
 def result_page():
+    """Render the result of Dijkstra algorithm."""
     message = request.args.get('message')
     path = request.args.get('path')
     return render_template('result.html', message=message, path=path)
+
 @app.route('/path_graph')
 def path_graph():
+    """Render a separate vis-network graph showing only the shortest path."""
     path = request.args.get('path', '')
     path = path.split(" → ") if path else []
     nodes, edges = fetch_graph_data()
-
-    # Highlight source and destination nodes
     highlighted_nodes = {"source": path[0] if path else None, "destination": path[-1] if path else None}
-    
     return render_template('path_graph.html', nodes=nodes, edges=edges, path=path, highlighted_nodes=highlighted_nodes)
 
-
+# ========================
+# Node Metadata API
+# ========================
 @app.route('/node_info/<node>')
 def node_info(node):
+    """Return JSON metadata for a given node."""
     conn = sqlite3.connect('database/node_metadata.db')
     cursor = conn.cursor()
     cursor.execute("SELECT phone, capacity, website, specialties, status FROM node_details WHERE node_id = ?", (node,))
@@ -156,11 +172,9 @@ def node_info(node):
         })
     else:
         return jsonify({'error': 'No info found'})
-    
 
-    
-
-    
-
+# ========================
+# Main App Runner
+# ========================
 if __name__ == '__main__':
     app.run(debug=True)
