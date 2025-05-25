@@ -96,22 +96,33 @@
 }
 
 
-.text-overlay {
+.text-overlay,
+.bottom-text-slide .text-bottom {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: rgb(210, 232, 236);  /* Stylish blue */
-  font-size: 3rem;  /* Large text */
+  color: rgb(210, 232, 236);
+  font-size: 3vw;  /* Responsive font size */
   font-weight: bold;
   text-align: center;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
   z-index: 10;
-  opacity: 0.8;  /* Slight transparency */
-  animation: slideIn 1.5s ease-out;  /* Slide-in effect */
-  white-space: nowrap;  /* Ensures text stays on one line */
+  opacity: 0.85;
+  animation: slideIn 1.5s ease-out;
+  padding: 0 5vw;  /* Horizontal padding for wrapping */
+  white-space: normal;  /* Allow text to wrap */
+  line-height: 1.2;
 }
+
+/* Adjust position of bottom text */
+.bottom-text-slide .text-bottom {
+  top: auto;
+  bottom: 10%;
+  transform: translateX(-50%);
+}
+
 
 @keyframes slideIn {
   0% {
@@ -152,3 +163,18 @@
   }
 }
 
+@media (max-width: 768px) {
+  .text-overlay,
+  .bottom-text-slide .text-bottom {
+    font-size: 5vw;
+    padding: 0 8vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-overlay,
+  .bottom-text-slide .text-bottom {
+    font-size: 6vw;
+    padding: 0 10vw;
+  }
+}
