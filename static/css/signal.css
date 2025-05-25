@@ -10,6 +10,7 @@ h2 {
     margin: 20px;
     color: #333;
     text-align: center;
+    margin-bottom: 20px;
 }
 
 /* Main Container */
@@ -53,7 +54,8 @@ h2 {
 /* Responsive Layout */
 @media (max-width: 768px) {
     .container {
-        flex-direction: column;
+        
+        padding: 150px;
         align-items: center;
     }
 
