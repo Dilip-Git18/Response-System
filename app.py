@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify
+from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify,flash
 import sqlite3
 import heapq
 
@@ -52,9 +52,9 @@ def dijkstra(start, end):
 # ========================
 # Fetch Graph Data for vis-network
 # ========================
+# Function to fetch graph data from ambulance.db
 def fetch_graph_data():
-    """Retrieve nodes and edges from database for visualization."""
-    conn = sqlite3.connect('database/ambulance.db')
+    conn = sqlite3.connect('database/ambulance.db', check_same_thread=False, timeout=10.0)
     cursor = conn.cursor()
     cursor.execute("SELECT start_node, end_node, distance FROM distances")
     rows = cursor.fetchall()
@@ -64,7 +64,8 @@ def fetch_graph_data():
     edges = []
 
     for start, end, distance in rows:
-        nodes.update([start, end])
+        nodes.add(start)
+        nodes.add(end)
         edges.append({'from': start, 'to': end, 'label': str(distance)})
 
     node_list = [{'id': node, 'label': node} for node in nodes]
@@ -74,9 +75,15 @@ def fetch_graph_data():
 # Page Routes
 # ========================
 @app.route('/')
+def loading():
+    """Show loading screen first."""
+    return render_template('loading.html')
+
+@app.route('/home')
 def home():
-    """Render the home page."""
+    """Render the original home page."""
     return render_template('home.html')
+
 
 @app.route('/about')
 def about():
@@ -93,9 +100,28 @@ def doctors():
     """Render the members (doctors) page."""
     return render_template('members.html')
 
-@app.route('/contact')
+
+app.secret_key = 'my$up3rS3cretK3y!'
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    """Render the contact page."""
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
+
+        # Save to SQLite
+        conn = sqlite3.connect('database/contact.db')
+        cursor = conn.cursor()
+        cursor.execute(
+            'INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)',
+            (name, email, message)
+        )
+        conn.commit()
+        conn.close()
+
+        flash('Your message has been received. Thank you!')
+        return redirect('/contact')
+
     return render_template('contact.html')
 
 @app.route('/gallary')
@@ -113,11 +139,12 @@ def leaflet_map():
     """Render the live map page."""
     return render_template('live_map.html')
 
-@app.route('/vis')
-def vis_graph():
-    """Render the full vis-network graph page."""
+@app.route('/signal')
+def signal():
     nodes, edges = fetch_graph_data()
-    return render_template('vis.html', nodes=nodes, edges=edges)
+    return render_template('signal.html', nodes=nodes, edges=edges)
+
+
 
 # ========================
 # Form Processing Routes
@@ -153,10 +180,10 @@ def path_graph():
 # ========================
 # Node Metadata API
 # ========================
+# 
 @app.route('/node_info/<node>')
 def node_info(node):
-    """Return JSON metadata for a given node."""
-    conn = sqlite3.connect('database/node_metadata.db')
+    conn = sqlite3.connect('database/node_metadata.db', check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute("SELECT phone, capacity, website, specialties, status FROM node_details WHERE node_id = ?", (node,))
     row = cursor.fetchone()
@@ -165,13 +192,74 @@ def node_info(node):
     if row:
         return jsonify({
             'phone': row[0],
-            'capacity': row[1],
+            'capacity': row[1],   
             'website': row[2],
             'specialties': row[3],
             'status': row[4]
         })
     else:
         return jsonify({'error': 'No info found'})
+
+@app.route('/record_click/<node>', methods=['POST'])
+def record_click(node):
+    try:
+        with sqlite3.connect('database/ambulance.db', check_same_thread=False) as conn:
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO node_clicks (node_id, node_label) VALUES (?, ?)", (node, node))
+            conn.commit()
+        return jsonify({'status': 'success'}), 200
+    except sqlite3.OperationalError as e:
+        print("error:", e)
+        return jsonify({'error': 'Database is locked, try again later'}), 500
+
+@app.route('/record_action/<node>', methods=['POST'])
+def record_action(node):
+    try:
+        with sqlite3.connect('database/ambulance.db', check_same_thread=False) as conn:
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO node_actions (node_id, action_type) VALUES (?, ?)", (node, 'button_click'))
+            conn.commit()
+        return jsonify({'status': 'success'}), 200
+    except sqlite3.OperationalError as e:
+        print("error:", e)
+        return jsonify({'error': 'Database is locked, try again later'}), 500
+
+@app.route('/dashboard')
+def dashboard():
+    # Fetch graph data
+    conn1 = sqlite3.connect('database/ambulance.db')
+    cursor1 = conn1.cursor()
+    cursor1.execute("SELECT * FROM distances")
+    distances = cursor1.fetchall()
+    
+    cursor1.execute("SELECT * FROM node_clicks")
+    clicks = cursor1.fetchall()
+
+    cursor1.execute("SELECT * FROM node_actions")
+    actions = cursor1.fetchall()
+    conn1.close()
+
+    # Fetch metadata
+    conn2 = sqlite3.connect('database/node_metadata.db')
+    cursor2 = conn2.cursor()
+    cursor2.execute("SELECT * FROM node_details")
+    metadata = cursor2.fetchall()
+    conn2.close()
+
+
+    # ✅ Fetch from contact.db
+    conn3 = sqlite3.connect('database/contact.db')
+    cursor3 = conn3.cursor()
+    cursor3.execute("SELECT * FROM contact_messages")
+    contacts = cursor3.fetchall()
+    conn3.close()
+
+    return render_template('dashboard.html',
+                           distances=distances,
+                           metadata=metadata,
+                           clicks=clicks,
+                           actions=actions,
+                           contacts=contacts)
 
 # ========================
 # Main App Runner

@@ -2,16 +2,25 @@
 {% block content %}
 <h2>Contact Us</h2>
 <p>Email: info@healthycare.com | Phone: +123 456 7890</p>
-<form>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-success">
+      {{ messages[0] }}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<form method="POST" action="/contact">
     <div class="mb-3">
-        <input type="text" class="form-control" placeholder="Your Name">
+        <input type="text" class="form-control" name="name" placeholder="Your Name" required>
     </div>
     <div class="mb-3">
-        <input type="email" class="form-control" placeholder="Your Email">
+        <input type="email" class="form-control" name="email" placeholder="Your Email" required>
     </div>
     <div class="mb-3">
-        <textarea class="form-control" placeholder="Your Message"></textarea>
+        <textarea class="form-control" name="message" placeholder="Your Message" required></textarea>
     </div>
-    <button class="btn btn-primary">Send</button>
+    <button class="btn btn-primary" type="submit">Send</button>
 </form>
 {% endblock %}

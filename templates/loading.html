@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-black">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loading...</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- particles.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <style>
+    /* Fullscreen container for particles */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      top: 0;
+      left: 0;
+      background: #0f172a; /* Tailwind slate-900 */
+    }
+
+    /* Glowing spinner animation */
+    .glow-spin {
+      animation: spin 1.6s linear infinite;
+      box-shadow:
+        0 0 6px #ff66cc,
+        0 0 12px #ff33aa,
+        0 0 18px #ff0080,
+        0 0 24px #ff0080,
+        0 0 30px #ff0080;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+
+    /* Fade-in for text */
+    @keyframes fade-in {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    .fade-in {
+      animation: fade-in 2s ease forwards;
+    }
+  </style>
+  <script>
+    // Redirect after 1.5 seconds
+    setTimeout(() => {
+      window.location.href = '/home';
+    }, 8000);
+
+    // Initialize particles.js config on window load
+    window.onload = function() {
+      particlesJS('particles-js', {
+        particles: {
+          number: {
+            value: 60,
+            density: {
+              enable: true,
+              value_area: 800
+            }
+          },
+          color: { value: "#ff69b4" },
+          shape: {
+            type: "circle",
+          },
+          opacity: {
+            value: 0.7,
+            random: true,
+            anim: { enable: true, speed: 1, opacity_min: 0.3, sync: false }
+          },
+          size: {
+            value: 3,
+            random: true,
+            anim: { enable: true, speed: 4, size_min: 1, sync: false }
+          },
+          line_linked: {
+            enable: true,
+            distance: 130,
+            color: "#ff69b4",
+            opacity: 0.4,
+            width: 1
+          },
+          move: {
+            enable: true,
+            speed: 2,
+            direction: "none",
+            random: true,
+            straight: false,
+            out_mode: "bounce",
+            bounce: true,
+            attract: { enable: false }
+          }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "grab" },
+            onclick: { enable: true, mode: "push" },
+            resize: true
+          },
+          modes: {
+            grab: { distance: 140, line_linked: { opacity: 0.6 }},
+            push: { particles_nb: 4 }
+          }
+        },
+        retina_detect: true
+      });
+    }
+  </script>
+</head>
+<body class="h-full relative flex flex-col justify-center items-center text-white font-sans overflow-hidden">
+  <!-- Particles.js background -->
+  <div id="particles-js"></div>
+
+  <!-- Content with higher z-index -->
+  <div class="relative z-10 flex flex-col justify-center items-center">
+    <!-- Glowing Spinner -->
+    <div class="w-20 h-20 border-8 border-t-transparent rounded-full border-pink-400 glow-spin mb-10"></div>
+
+    <!-- Loading Text -->
+    <h2 class="text-3xl font-extrabold tracking-wide drop-shadow-lg fade-in select-none">
+      Loading, please wait...
+    </h2>
+  </div>
+</body>
+</html>
