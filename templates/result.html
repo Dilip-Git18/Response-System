@@ -5,18 +5,7 @@
     <meta charset="UTF-8">
     <title>Route Result</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
-
-    <style>
-    #particles-js {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      top: 0;
-      left: 0;
-      background-color: #edf5ed; /* Optional: change for dark/light theme */
-    }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dijpart.css') }}">
 
 </head>
 
@@ -44,52 +33,8 @@
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
   <!-- Particles Initialization -->
-  <script>
-    particlesJS("particles-js", {
-      "particles": {
-        "number": {
-          "value": 80,
-          "density": { "enable": true, "value_area": 800 }
-        },
-        "color": { "value": "#2E8B57" },
-        "shape": {
-          "type": "circle",
-          "stroke": { "width": 0, "color": "#2E8B57" }
-        },
-        "opacity": {
-          "value": 0.5,
-          "random": false
-        },
-        "size": {
-          "value": 3,
-          "random": true
-        },
-        "line_linked": {
-          "enable": true,
-          "distance": 150,
-          "color": "#2E8B57",
-          "opacity": 0.4,
-          "width": 1
-        },
-        "move": {
-          "enable": true,
-          "speed": 2,
-          "direction": "none",
-          "out_mode": "out"
-        }
-      },
-      "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-          "onhover": { "enable": true, "mode": "repulse" },
-          "onclick": { "enable": true, "mode": "push" },
-          "resize": true
-        }
-      },
-      "retina_detect": true
-    });
-  </script>
-
+  <script src="static/js/dijpart.js"></script>
+  
 </body>
 
 </html>
