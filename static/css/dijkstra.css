@@ -9,6 +9,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 /* Heading */
@@ -28,8 +29,10 @@ h1 {
     padding: 30px 40px;
     border-radius: 12px;
     box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     border: 2px solid #2E8B57;
+    box-sizing: border-box;
 }
 
 /* Labels */
@@ -44,7 +47,7 @@ label {
 
 /* Input Fields */
 input[type="text"] {
-    width: 90%;
+    width: 100%;
     padding: 12px;
     margin-bottom: 15px;
     border: 2px solid #2E8B57;
@@ -53,6 +56,7 @@ input[type="text"] {
     background: #f9f9f9;
     outline: none;
     transition: all 0.3s ease-in-out;
+    box-sizing: border-box;
 }
 
 input[type="text"]:focus {
@@ -61,7 +65,7 @@ input[type="text"]:focus {
     box-shadow: 0px 3px 10px rgba(46, 139, 87, 0.3);
 }
 
-/* Center Submit Button */
+/* Submit Button */
 .submit-btn {
     padding: 12px 20px;
     background: linear-gradient(135deg, #2E8B57, #3CB371);
@@ -74,8 +78,7 @@ input[type="text"]:focus {
     margin-top: 20px;
     transition: all 0.3s ease-in-out;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
 }
 
 .submit-btn:hover {
@@ -85,7 +88,7 @@ input[type="text"]:focus {
 
 /* Back Button */
 .back-btn {
-    margin-top: auto;
+    margin-top: 20px;
     margin-bottom: 20px;
     padding: 12px 20px;
     background-color: #2E8B57;
@@ -94,9 +97,26 @@ input[type="text"]:focus {
     border-radius: 8px;
     font-weight: bold;
     transition: all 0.3s ease-in-out;
+    display: inline-block;
 }
 
 .back-btn:hover {
     background-color: #3CB371;
 }
 
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 24px;
+        letter-spacing: 1px;
+    }
+
+    .form-container {
+        padding: 20px;
+    }
+
+    .submit-btn, .back-btn {
+        font-size: 16px;
+        padding: 10px 16px;
+    }
+}
