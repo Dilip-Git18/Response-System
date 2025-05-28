@@ -13,7 +13,7 @@
     {% endif %}
   {% endwith %}
 
-  <form method="POST" action="/contact" novalidate>
+  <form id="contactForm" method="POST" action="/contact" novalidate>
     <div class="mb-3">
       <label for="name" class="form-label">Your Name</label>
       <input type="text" id="name" class="form-control" name="name" placeholder="Enter your name" required>
@@ -39,4 +39,17 @@
     </button>
   </form>
 </div>
+
+<script>
+document.getElementById("contactForm").addEventListener("submit", function(event) {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const message = document.getElementById("message").value.trim();
+
+  if (!name || !email || !message) {
+    alert("Please fill in all fields before submitting.");
+    event.preventDefault();  // Prevent form submission
+  }
+});
+</script>
 {% endblock %}
