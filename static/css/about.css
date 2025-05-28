@@ -20,8 +20,10 @@
 
 /* Styling for highlighting "Medulance" */
 .highlight-medulance {
-  border-bottom: 3px solid #87ceeb;
-  padding-bottom: 2px;
+  border-bottom: 4px solid #66b2ff;
+  padding-bottom: 4px;
+  color: #0056b3;
+  font-style: italic;
 }
 
 /* Content styling */

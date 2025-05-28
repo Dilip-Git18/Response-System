@@ -1,110 +1,163 @@
-
-/* Home Section */
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
-  background: linear-gradient(to right, #3ce798, hsl(203, 39%, 94%));
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8fafc;
+  color: #222;
+  line-height: 1.6;
 }
 
-
-.home {
+/* Hero Section */
+.home-hero {
   position: relative;
-  color: rgb(45, 181, 205);
-  text-align: center;
-  padding: 6rem 2rem;
-  background-size: cover;
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
   overflow: hidden;
+  text-align: center;
 }
-#background-image {
+
+.hero-bg {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;  /* Ensure video covers the entire section */
-  z-index: -1;  /* Place video behind content */
+  object-fit: cover;
+  z-index: -2;
 }
 
-.home h1 {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  animation: slideIn 1.5s ease-out;
-}
-
-@keyframes slideIn {
-  0% { transform: translateY(-50px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-.cta-btn {
-  background-color: #275b32;
-  color: white;
-  padding: 0.8rem 1.5rem;
-  border: none;
-  text-decoration: none;
-  font-size: 1.2rem;
-  border-radius: 8px;
-  margin-top: 2rem;
-  display: inline-block;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.cta-btn:hover {
-  background-color: #1a4d29;
-  transform: scale(1.05);
-}
-
-
-/* Animation */
-@keyframes slideIn {
-  0% {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-slideIn {
-  animation: slideIn 1.5s ease-out;
-}
-
-/* Particles.js container */
-#particles-js {
-  position: fixed;
+.overlay {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.5);
   width: 100%;
   height: 100%;
-  z-index: -2;
-  top: 0;
-  left: 0;
+  z-index: -1;
 }
 
+.hero-content {
+  color: #fff;
+  max-width: 900px;
+  padding: 2rem;
+  animation: fadeIn 1s ease-in-out;
+}
 
-@media (max-width: 576px) {
-  .home {
-    padding: 4rem 1rem;
+.hero-content h1 {
+  font-size: 3.2rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content .highlight {
+  color: #3ce798;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.hero-buttons a {
+  text-decoration: none;
+  margin: 0 1rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #3ce798;
+  color: #111;
+}
+
+.btn-primary:hover {
+  background-color: #2ac186;
+}
+
+.btn-outline {
+  border: 2px solid #fff;
+  color: #fff;
+}
+
+.btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Info Section */
+.info-section {
+  background-color: #fff;
+  padding: 4rem 1rem;
+  text-align: center;
+}
+
+.info-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.info-box {
+  background: #f0f4f8;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 280px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.info-box h3 {
+  color: #275b32;
+  margin-bottom: 0.5rem;
+}
+
+.info-box p {
+  color: #444;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .home-hero {
+    height: auto;
+    padding: 3rem 1rem;
   }
 
-  .home h1 {
-    font-size: 1.8rem;
-    line-height: 1.3;
-    padding: 0 0.5rem;
+  .hero-content h1 {
+    font-size: 2rem;
   }
 
-  .home p {
+  .hero-content p {
     font-size: 1rem;
-    padding: 0 1rem;
-    line-height: 1.5;
   }
 
-  .cta-btn {
-    font-size: 1rem;
-    padding: 0.6rem 1.2rem;
-    margin-top: 1.5rem;
+  .hero-buttons a {
+    display: block;
+    margin: 0.8rem auto;
   }
 
-  #background-image {
-    object-position: center;
+  .info-container {
+    flex-direction: column;
+    align-items: center;
   }
 }

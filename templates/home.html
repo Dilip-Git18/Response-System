@@ -1,27 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<section id="home" class="home-hero">
+    <img src="{{ url_for('static', filename='images/B15.jpg') }}" alt="Ambulance Background" class="hero-bg">
+    <div class="overlay"></div>
 
-
-<section id="home" class="section home">
-    
-    <img src="{{ url_for('static', filename='images/B15.jpg') }}" alt="Background Image" id="background-image">
-    
-    <div class="content">
-        <h1>Welcome to HealthyCare Ambulance</h1>
-        <p> HealthyCare Ambulance
-            provides world-class healthcare with a patient-first approach. Our website offers easy access to scheduling, medical services, doctor profiles, and emergency care information.
+    <div class="hero-content">
+        <h1>Rapid. Reliable. <span class="highlight">Healthcare</span></h1>
+        <p>
+            HealthyCare Ambulance provides expert emergency response and medical transport
+            with compassion and efficiency—when every second matters.
         </p>
-        <a href="{{ url_for('services') }}" class="cta-btn">Explore Our Services</a>
-
+        <div class="hero-buttons">
+            <a href="{{ url_for('services') }}" class="btn-primary">Explore Services</a>
+            <a href="{{ url_for('contact') }}" class="btn-outline">Emergency Contact</a>
+        </div>
     </div>
 </section>
 
+<section class="info-section">
+    <div class="info-container">
+        <div class="info-box">
+            <h3>24/7 Emergency</h3>
+            <p>Always ready to respond to any medical crisis, anytime, anywhere.</p>
+        </div>
+        <div class="info-box">
+            <h3>Skilled Staff</h3>
+            <p>This system was developed by a dedicated team of engineers</p>
 
-<div class="text-center">
-    <h1 class="display-4 text-primary mb-4"></h1>
-    <p class="lead mb-4">Your health is our priority. We are here to provide the best care for you and your family.</p>
+        </div>
+        <div class="info-box">
+            <h3>Modern Fleet</h3>
+            <p>Equipped ambulances with life-saving algorithms and GPS tracking.</p>
+        </div>
+                <div class="info-box">
+            <h3>Signal Prioritization</h3>
+            <p>Ambulances are equipped to send priority signals to nearby traffic systems, reducing delay during peak traffic hours.</p>
+        </div>
+        <div class="info-box">
+    <h3>Path Optimization</h3>
+    <p>We use Dijkstra’s and A* algorithms to calculate the fastest, most efficient ambulance routes.</p>
 </div>
 
-
+    </div>
+</section>
 {% endblock %}
