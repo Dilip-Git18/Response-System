@@ -1,26 +1,42 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Contact Us</h2>
-<p>Email: info@healthycare.com | Phone: +123 456 7890</p>
+<div class="contact-container" style="max-width:600px; margin:auto; background:white; padding:30px 40px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+  <h2 style="color:#40769f; margin-bottom:20px;">Contact Us</h2>
+  <p>Email: <a href="mailto:info@healthycare.com" style="color:#40769f;">info@healthycare.com</a> | Phone: <a href="tel:+1234567890" style="color:#40769f;">+123 456 7890</a></p>
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class="alert alert-success">
-      {{ messages[0] }}
-    </div>
-  {% endif %}
-{% endwith %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ messages[0] }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  {% endwith %}
 
-<form method="POST" action="/contact">
+  <form method="POST" action="/contact" novalidate>
     <div class="mb-3">
-        <input type="text" class="form-control" name="name" placeholder="Your Name" required>
+      <label for="name" class="form-label">Your Name</label>
+      <input type="text" id="name" class="form-control" name="name" placeholder="Enter your name" required>
     </div>
+
     <div class="mb-3">
-        <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+      <label for="email" class="form-label">Your Email</label>
+      <input type="email" id="email" class="form-control" name="email" placeholder="Enter your email" required>
     </div>
+
     <div class="mb-3">
-        <textarea class="form-control" name="message" placeholder="Your Message" required></textarea>
+      <label for="message" class="form-label">Your Message</label>
+      <textarea id="message" class="form-control" name="message" rows="5" placeholder="Write your message here..." required></textarea>
     </div>
-    <button class="btn btn-primary" type="submit">Send</button>
-</form>
+
+    <button class="btn btn-primary w-100" 
+            style="background-color: #40769f; border: 2px solid #3a728b; color: white; transition: transform 0.1s ease, background-color 0.3s ease, border-color 0.3s ease;" 
+            type="submit" 
+            onmousedown="this.style.transform='scale(0.95)'" 
+            onmouseup="this.style.transform='scale(1)'" 
+            onmouseleave="this.style.transform='scale(1)'">
+      Send Message
+    </button>
+  </form>
+</div>
 {% endblock %}

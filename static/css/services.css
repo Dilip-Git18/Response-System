@@ -6,7 +6,7 @@
 
 .services-header h2 {
   font-size: 2.5rem;
-  color: #1976d2; /* Use your primary color */
+  color: #40769f; /* Use your primary color */
 }
 
 .services-header p {
@@ -48,7 +48,7 @@
 
 .button-card h3 {
   margin-top: 0;
-  color: #1976d2;
+  color: #40769f;
 }
 
 .button-card p {
@@ -63,7 +63,7 @@
   padding: 12px 20px;
   font-size: 18px;
   color: white;
-  background: #1976d2;
+  background: #5084ac;
   border-radius: 8px;
   text-decoration: none;
   transition: background 0.3s ease, transform 0.3s ease;
@@ -71,7 +71,7 @@
 }
 
 .button:hover {
-  background: #1565c0;
+  background: #448398;
   transform: scale(1.05);
 }
 
