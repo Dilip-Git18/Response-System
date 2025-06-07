@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>A* Pathfinding</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/astr.css') }}">
+</head>
+<body>
+    <h1>A* City Pathfinding</h1>
+
+<form method="POST" action="/astr">
+    <label>Start City:</label>
+    <select name="start" class="city-select" required>
+        {% for city in cities %}
+            <option value="{{ city }}" {% if city == selected_start %}selected{% endif %}>{{ city }}</option>
+        {% endfor %}
+    </select>
+
+    <label>End City:</label>
+    <select name="end" class="city-select" required>
+        {% for city in cities %}
+            <option value="{{ city }}" {% if city == selected_end %}selected{% endif %}>{{ city }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Find Path">
+</form>
+
+
+    <h2>Grid</h2>
+    <table class="grid">
+        {% for y in range(5) %}
+        <tr>
+            {% for x in range(5) %}
+            {% set pos = (x, y) %}
+            {% set cell = grid[pos] %}
+            <td class="{% if pos == start %}start
+                        {% elif pos == end %}end
+                        {% elif pos in path %}path
+                        {% elif cell.obstacle %}obstacle
+                        {% else %}empty{% endif %}">
+                {{ cell.city }}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+
+<div class="legend">
+    <div class="legend-item"><span class="legend-box start"></span> Start</div>
+    <div class="legend-item"><span class="legend-box end"></span> End</div>
+    <div class="legend-item"><span class="legend-box path"></span> Path</div>
+    <div class="legend-item"><span class="legend-box obstacle"></span> Obstacle</div>
+    <div class="legend-item"><span class="legend-box empty"></span> Empty</div>
+</div>
+
+</body>
+</html>

@@ -49,6 +49,79 @@ def dijkstra(start, end):
 
     return float("inf"), []
 
+
+# ========================
+# A* Algorithm
+# ========================
+def heuristic(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+def get_grid():
+    conn = sqlite3.connect('database/astar.db')
+    c = conn.cursor()
+    c.execute("SELECT x, y, city, is_obstacle FROM grid")
+    data = c.fetchall()
+    conn.close()
+    grid = {(x, y): {'city': city, 'obstacle': is_obstacle} for x, y, city, is_obstacle in data}
+    return grid
+
+def get_city_coords(grid):
+    return {info['city']: pos for pos, info in grid.items()}
+
+def astar(start, goal, grid):
+    neighbors = [(0,1), (1,0), (-1,0), (0,-1)]
+    open_set = []
+    heapq.heappush(open_set, (0, start))
+    came_from = {}
+    g_score = {node: float('inf') for node in grid}
+    g_score[start] = 0
+    f_score = {node: float('inf') for node in grid}
+    f_score[start] = heuristic(start, goal)
+
+    while open_set:
+        _, current = heapq.heappop(open_set)
+        if current == goal:
+            path = [current]
+            while current in came_from:
+                current = came_from[current]
+                path.append(current)
+            return path[::-1]
+        for dx, dy in neighbors:
+            neighbor = (current[0] + dx, current[1] + dy)
+            if neighbor not in grid or grid[neighbor]['obstacle'] == 1:
+                continue
+            tentative_g_score = g_score[current] + 1
+            if tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, goal)
+                heapq.heappush(open_set, (f_score[neighbor], neighbor))
+    return []
+
+@app.route('/astr', methods=['GET', 'POST'])
+def astr():
+    grid = get_grid()
+    cities = [cell['city'] for cell in grid.values()]
+    cities = sorted(set(cities))
+
+    path = []
+    start_city = end_city = None
+    start = end = None
+
+    if request.method == 'POST':
+        start_city = request.form['start']
+        end_city = request.form['end']
+        start = next((pos for pos, cell in grid.items() if cell['city'] == start_city), None)
+        end = next((pos for pos, cell in grid.items() if cell['city'] == end_city), None)
+
+        if start and end:
+            path = astar(start, end, grid)
+
+    return render_template('astr.html', grid=grid, path=path, start=start, end=end,
+                           cities=cities, selected_start=start_city, selected_end=end_city)
+
+
+
 # ========================
 # Fetch Graph Data for vis-network
 # ========================
