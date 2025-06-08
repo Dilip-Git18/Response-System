@@ -1,136 +1,185 @@
 var map = L.map('map').setView([30.3165, 78.0322], 13);
 
-// Add OpenStreetMap tile layer
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
+// Base tile layers
+var streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-var currentRoute = null;  // To store the current route
-var markers = [];  // To store the markers
+var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://carto.com/">CartoDB</a>',
+  subdomains: 'abcd',
+  maxZoom: 19
+});
 
-// Function to geocode a location and get coordinates
-function geocodeLocation(location, callback) {
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.length > 0) {
-                var latLng = [data[0].lat, data[0].lon];
-                callback(latLng);
-            } else {
-                alert("Location not found!");
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching location:", error);
-            alert("There was an error while searching for the location. Please try again later.");
-        });
+var satellite = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenTopoMap contributors'
+});
+
+L.control.layers({
+  "Streets": streets,
+  "Dark": dark,
+  "Satellite": satellite
+}).addTo(map);
+
+var currentRoute = null;
+var markers = [];
+var watchId = null;
+var userMarker = null;
+
+function showLoading() {
+  document.getElementById('loading').style.display = 'block';
+}
+function hideLoading() {
+  document.getElementById('loading').style.display = 'none';
 }
 
-// Function to get the user's current location
-function getCurrentLocation() {
-    return new Promise((resolve, reject) => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    var lat = position.coords.latitude;
-                    var lon = position.coords.longitude;
-                    resolve([lat, lon]);
-                },
-                function(error) {
-                    console.error("Geolocation error:", error);
-                    switch (error.code) {
-                        case error.PERMISSION_DENIED:
-                            reject("User denied the request for Geolocation.");
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            reject("Location information is unavailable.");
-                            break;
-                        case error.TIMEOUT:
-                            reject("The request to get user location timed out.");
-                            break;
-                        default:
-                            reject("An unknown error occurred.");
-                            break;
-                    }
-                }
-            );
-        } else {
-            reject("Geolocation is not supported by this browser.");
-        }
+function geocodeLocation(location, callback) {
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.length > 0) {
+        callback([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+      } else {
+        alert("Location not found!");
+      }
+    }).catch(err => {
+      console.error("Geocoding error:", err);
+      alert("Error fetching location. Try again.");
     });
 }
 
-// Function to show loading indicator
-function showLoading() {
-    document.getElementById('loading').style.display = 'block';
+function getCurrentLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject("Geolocation not supported.");
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve([pos.coords.latitude, pos.coords.longitude]),
+      err => reject("Failed to get location: " + err.message)
+    );
+  });
 }
 
-// Function to hide loading indicator
-function hideLoading() {
-    document.getElementById('loading').style.display = 'none';
-}
-
-// Function to find and display the route
 function findRoute() {
-    var endLocation = document.getElementById('end-location').value.trim();
+  const endLocation = document.getElementById('end-location').value.trim();
+  if (!endLocation) return alert('Please enter a destination.');
 
-    if (endLocation) {
-        showLoading(); // Show loading indicator
+  showLoading();
+  getCurrentLocation()
+    .then(startLatLng => {
+      geocodeLocation(endLocation, endLatLng => {
+        clearRoute();
 
-        // Get the user's current location
-        getCurrentLocation()
-            .then(function(startLatLng) {
-                // Geocode the destination location
-                geocodeLocation(endLocation, function(endLatLng) {
-                    // Remove previous route and markers
-                    if (currentRoute) {
-                        currentRoute.remove();  // Remove the previous route
-                    }
-                    markers.forEach(marker => map.removeLayer(marker));  // Remove the previous markers
-                    markers = [];  // Clear the marker array
+        userMarker = L.marker(startLatLng).addTo(map).bindPopup("You are here").openPopup();
+        markers.push(userMarker);
+        var endMarker = L.marker(endLatLng).addTo(map).bindPopup("Destination: " + endLocation).openPopup();
+        markers.push(endMarker);
 
-                    // Add a marker for the user's location
-                    var startMarker = L.marker(startLatLng).addTo(map).bindPopup("You are here").openPopup();
-                    markers.push(startMarker);
+        currentRoute = L.Routing.control({
+          waypoints: [L.latLng(startLatLng), L.latLng(endLatLng)],
+          routeWhileDragging: false,
+          show: false,
+          addWaypoints: false,
+        }).addTo(map);
 
-                    // Add a marker for the destination location
-                    var endMarker = L.marker(endLatLng).addTo(map).bindPopup("Destination: " + endLocation).openPopup();
-                    markers.push(endMarker);
+        currentRoute.on('routesfound', e => {
+          const summary = e.routes[0].summary;
+          const distanceKm = (summary.totalDistance / 1000).toFixed(2);
+          const timeMin = summary.totalTime / 60;
 
-                    // Create the route using Leaflet Routing Machine
-                    currentRoute = L.Routing.control({
-                        waypoints: [
-                            L.latLng(startLatLng),
-                            L.latLng(endLatLng)
-                        ],
-                        routeWhileDragging: true
-                    }).addTo(map);
+          // Estimate a range to account for traffic
+          const minTime = Math.floor(timeMin * 0.9);
+          const maxTime = Math.ceil(timeMin * 1.25);
 
-                    // Ensure map adjusts to show both markers and route
-                    map.fitBounds(L.latLngBounds([startLatLng, endLatLng]));
+          alert(`📍 Distance: ${distanceKm} km\n⏱️ Estimated Time: ~${minTime}–${maxTime} minutes (depending on traffic)`);
+        });
 
-                    // Hide loading indicator after route is created
-                    hideLoading();
-                });
-            })
-            .catch(function(error) {
-                hideLoading(); // Hide loading indicator on error
-                alert(error); // Display detailed error message
-            });
-    } else {
-        alert('Please enter a destination location!');
-    }
+        currentRoute.on('routingerror', e => {
+          alert("Routing failed: " + e.error.message);
+        });
+
+        map.fitBounds(L.latLngBounds([startLatLng, endLatLng]));
+        hideLoading();
+      });
+    }).catch(err => {
+      hideLoading();
+      alert(err);
+    });
 }
 
-// Function to clear the route and markers
 function clearRoute() {
-    if (currentRoute) {
-        currentRoute.remove();  // Remove the route
-    }
-    markers.forEach(marker => map.removeLayer(marker));  // Remove markers
-    markers = [];  // Clear the markers array
-    document.getElementById('end-location').value = '';  // Clear the input field
+  if (currentRoute) currentRoute.remove();
+  markers.forEach(marker => map.removeLayer(marker));
+  markers = [];
+  currentRoute = null;
+  if (userMarker) userMarker = null;
+  document.getElementById('end-location').value = '';
 }
 
-// Add geocoder control to the map
+function startLiveLocationTracking() {
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported by your browser.");
+    return;
+  }
+
+  if (watchId) {
+    navigator.geolocation.clearWatch(watchId);
+  }
+
+  watchId = navigator.geolocation.watchPosition(
+    pos => {
+      const latLng = [pos.coords.latitude, pos.coords.longitude];
+      if (userMarker) {
+        userMarker.setLatLng(latLng);
+      } else {
+        userMarker = L.marker(latLng).addTo(map).bindPopup("Live Location").openPopup();
+        markers.push(userMarker);
+      }
+      map.setView(latLng);
+    },
+    err => alert("Tracking error: " + err.message),
+    { enableHighAccuracy: true }
+  );
+}
+
 L.Control.geocoder().addTo(map);
+
+// *** AUTOCOMPLETE SUGGESTIONS IN FIXED BOTTOM CONTAINER ***
+const input = document.getElementById("end-location");
+const suggestionBox = document.getElementById("autocomplete-suggestions");
+const showSuggestionsBtn = document.getElementById("show-suggestions-btn");
+
+showSuggestionsBtn.addEventListener("click", () => {
+  const query = input.value.trim();
+  if (query.length < 3) {
+    alert("Please enter at least 3 characters to get suggestions.");
+    return;
+  }
+
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`)
+    .then(res => res.json())
+    .then(data => {
+      suggestionBox.innerHTML = '';
+      if (data.length === 0) {
+        suggestionBox.textContent = 'No suggestions found.';
+        return;
+      }
+      data.forEach(place => {
+        const item = document.createElement("div");
+        item.className = "autocomplete-suggestion";
+        item.textContent = place.display_name;
+        item.addEventListener("click", () => {
+          input.value = place.display_name;
+          suggestionBox.innerHTML = '';
+        });
+        suggestionBox.appendChild(item);
+      });
+    }).catch(() => {
+      suggestionBox.textContent = 'Error fetching suggestions.';
+    });
+});
+
+// Hide suggestions on outside click
+document.addEventListener("click", (e) => {
+  if (!suggestionBox.contains(e.target) && e.target !== input && e.target !== showSuggestionsBtn) {
+    suggestionBox.innerHTML = '';
+  }
+});

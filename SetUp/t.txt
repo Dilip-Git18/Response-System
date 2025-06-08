@@ -1,0 +1,420 @@
+var map = L.map('map').setView([30.3165, 78.0322], 13);
+
+// Base tile layers
+var streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://carto.com/">CartoDB</a>',
+  subdomains: 'abcd',
+  maxZoom: 19
+});
+
+var satellite = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenTopoMap contributors'
+});
+
+L.control.layers({
+  "Streets": streets,
+  "Dark": dark,
+  "Satellite": satellite
+}).addTo(map);
+
+var currentRoute = null;
+var markers = [];
+var watchId = null;
+var userMarker = null;
+
+function showLoading() {
+  document.getElementById('loading').style.display = 'block';
+}
+function hideLoading() {
+  document.getElementById('loading').style.display = 'none';
+}
+
+function geocodeLocation(location, callback) {
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.length > 0) {
+        callback([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+      } else {
+        alert("Location not found!");
+      }
+    }).catch(err => {
+      console.error("Geocoding error:", err);
+      alert("Error fetching location. Try again.");
+    });
+}
+
+function getCurrentLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject("Geolocation not supported.");
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve([pos.coords.latitude, pos.coords.longitude]),
+      err => reject("Failed to get location: " + err.message)
+    );
+  });
+}
+
+function findRoute() {
+  const endLocation = document.getElementById('end-location').value.trim();
+  if (!endLocation) return alert('Please enter a destination.');
+
+  showLoading();
+  getCurrentLocation()
+    .then(startLatLng => {
+      geocodeLocation(endLocation, endLatLng => {
+        clearRoute();
+
+        userMarker = L.marker(startLatLng).addTo(map).bindPopup("You are here").openPopup();
+        markers.push(userMarker);
+        var endMarker = L.marker(endLatLng).addTo(map).bindPopup("Destination: " + endLocation).openPopup();
+        markers.push(endMarker);
+
+        currentRoute = L.Routing.control({
+          waypoints: [L.latLng(startLatLng), L.latLng(endLatLng)],
+          routeWhileDragging: false,
+          show: false,
+          addWaypoints: false,
+        }).addTo(map);
+
+        currentRoute.on('routesfound', e => {
+          const summary = e.routes[0].summary;
+          const distanceKm = (summary.totalDistance / 1000).toFixed(2);
+          const timeMin = summary.totalTime / 60;
+
+          // Estimate a range to account for traffic
+          const minTime = Math.floor(timeMin * 0.9);
+          const maxTime = Math.ceil(timeMin * 1.25);
+
+          alert(`📍 Distance: ${distanceKm} km\n⏱️ Estimated Time: ~${minTime}–${maxTime} minutes (depending on traffic)`);
+        });
+
+        currentRoute.on('routingerror', e => {
+          alert("Routing failed: " + e.error.message);
+        });
+
+        map.fitBounds(L.latLngBounds([startLatLng, endLatLng]));
+        hideLoading();
+      });
+    }).catch(err => {
+      hideLoading();
+      alert(err);
+    });
+}
+
+function clearRoute() {
+  if (currentRoute) currentRoute.remove();
+  markers.forEach(marker => map.removeLayer(marker));
+  markers = [];
+  currentRoute = null;
+  if (userMarker) userMarker = null;
+  document.getElementById('end-location').value = '';
+}
+
+function startLiveLocationTracking() {
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported by your browser.");
+    return;
+  }
+
+  if (watchId) {
+    navigator.geolocation.clearWatch(watchId);
+  }
+
+  watchId = navigator.geolocation.watchPosition(
+    pos => {
+      const latLng = [pos.coords.latitude, pos.coords.longitude];
+      if (userMarker) {
+        userMarker.setLatLng(latLng);
+      } else {
+        userMarker = L.marker(latLng).addTo(map).bindPopup("Live Location").openPopup();
+        markers.push(userMarker);
+      }
+      map.setView(latLng);
+    },
+    err => alert("Tracking error: " + err.message),
+    { enableHighAccuracy: true }
+  );
+}
+
+L.Control.geocoder().addTo(map);
+
+// *** AUTOCOMPLETE SUGGESTIONS IN FIXED BOTTOM CONTAINER ***
+const input = document.getElementById("end-location");
+const suggestionBox = document.getElementById("autocomplete-suggestions");
+const showSuggestionsBtn = document.getElementById("show-suggestions-btn");
+
+showSuggestionsBtn.addEventListener("click", () => {
+  const query = input.value.trim();
+  if (query.length < 3) {
+    alert("Please enter at least 3 characters to get suggestions.");
+    return;
+  }
+
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`)
+    .then(res => res.json())
+    .then(data => {
+      suggestionBox.innerHTML = '';
+      if (data.length === 0) {
+        suggestionBox.textContent = 'No suggestions found.';
+        return;
+      }
+      data.forEach(place => {
+        const item = document.createElement("div");
+        item.className = "autocomplete-suggestion";
+        item.textContent = place.display_name;
+        item.addEventListener("click", () => {
+          input.value = place.display_name;
+          suggestionBox.innerHTML = '';
+        });
+        suggestionBox.appendChild(item);
+      });
+    }).catch(() => {
+      suggestionBox.textContent = 'Error fetching suggestions.';
+    });
+});
+
+// Hide suggestions on outside click
+document.addEventListener("click", (e) => {
+  if (!suggestionBox.contains(e.target) && e.target !== input && e.target !== showSuggestionsBtn) {
+    suggestionBox.innerHTML = '';
+  }
+});
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Route Search with Live Location</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="static/styles.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/live_map.css') }}">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+</head>
+<body>
+  
+  <h1>Find Route from Your Current Location to a Destination</h1>
+
+  <div id="map"></div>
+
+<div class="route-input-container">
+  <input type="text" id="end-location" placeholder="Enter destination location" autocomplete="off" />
+  <button id="show-suggestions-btn" type="button" style="margin-left:8px; padding:6px 10px; font-size:14px;">Show Suggestions</button>
+  <div id="autocomplete-suggestions" class="autocomplete-suggestions"></div>
+  <button onclick="findRoute()" style="margin-top:10px;">Find Route</button>
+  <button onclick="clearRoute()" style="margin-top:10px;">Clear Route</button>
+  <button onclick="startLiveLocationTracking()" style="margin-top:10px;">Live Track</button>
+</div>
+
+
+
+  <div id="loading" style="display: none;">Loading...</div>
+
+  <!-- Suggestions container fixed at bottom -->
+  <div id="suggestions-container">
+    <div id="autocomplete-suggestions" class="autocomplete-suggestions"></div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+  <script src="static/js/map.js"></script>
+  
+</body>
+</html>
+
+/* General Styling */
+body {
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(to right, #f0f0f0, #e6f7ff);
+    margin: 0;
+    padding: 50px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Heading */
+h1 {
+    color: #2E8B57;
+    font-size: 32px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    margin-bottom: 25px;
+}
+
+/* Map Container Styling */
+#map {
+    height: 500px;
+    width: 100%;  /* Make map take full width */
+    max-width: 100vw;  /* Allow map to extend to full width of viewport */
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: block;
+}
+
+/* Form Styling */
+.route-input-container {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+    display: inline-block;
+    width: 90%;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+/* Labels */
+label {
+    font-weight: bold;
+    color: #444;
+    font-size: 16px;
+    display: block;
+    margin-top: 12px;
+}
+
+/* Input Fields */
+input[type="text"] {
+    width: 90%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 2px solid #2E8B57;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #f9f9f9;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+input[type="text"]:focus {
+    background: #fff;
+    border-color: #3CB371;
+    box-shadow: 0px 3px 10px rgba(46, 139, 87, 0.3);
+}
+
+/* Submit Button */
+button {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #2E8B57, #3CB371);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #3CB371, #2E8B57);
+    transform: translateY(-3px);
+    box-shadow: 0px 6px 12px rgba(46, 139, 87, 0.3);
+}
+
+/* Paragraph Text */
+p {
+    font-size: 18px;
+    color: #555;
+    margin-top: 20px;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+/* Result Card */
+.result-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+    display: inline-block;
+    text-align: center;
+    max-width: 500px;
+    margin-top: 20px;
+}
+
+/* Button Styling */
+.button {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #2E8B57, #3CB371);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.button:hover {
+    background: linear-gradient(135deg, #3CB371, #2E8B57);
+    transform: translateY(-3px);
+    box-shadow: 0px 6px 12px rgba(46, 139, 87, 0.3);
+}
+
+
+
+.autocomplete-suggestions {
+  margin-top: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border: 2px solid #2E8B57;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(46, 139, 87, 0.3);
+  font-family: 'Poppins', Arial, sans-serif;
+  font-weight: 600;
+  color: #2E8B57;
+  width: 90%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 1000;
+  position: relative;
+}
+
+.autocomplete-suggestion {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #e6f7ff;
+  user-select: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.autocomplete-suggestion:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-suggestion:hover {
+  background-color: #e6f7ff;
+  color: #3CB371;
+}
+
+#show-suggestions-btn {
+  background: linear-gradient(135deg, #2E8B57, #3CB371);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+#show-suggestions-btn:hover {
+  background: linear-gradient(135deg, #3CB371, #2E8B57);
+}
