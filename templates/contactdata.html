@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Contact Messages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+</head>
+<body>
+    <div class="container">
+        <h1>Contact Messages</h1>
+        
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>ID</th><th>Name</th><th>Email</th><th>Message</th>
+                </tr>
+                {% for row in contacts %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <p>
+            <a href="{{ url_for('dashboard') }}" class="back-button">← Back to Dashboard</a>
+        </p>
+    </div>
+</body>
+</html>

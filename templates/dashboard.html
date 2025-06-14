@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="3"> <!-- Auto refresh every 3 seconds -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content="3" /> <!-- Auto refresh every 3 seconds -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
     <title>Unified Dashboard</title>
-
 </head>
 <body>
 
@@ -14,80 +13,90 @@
         <h1>Database Dashboard</h1>
 
         <h2>Distances (Graph Edges)</h2>
-        <table>
-            <tr><th>Start Node</th><th>End Node</th><th>Distance</th></tr>
-            {% for row in distances %}
-            <tr>
-                <td>{{ row[0] }}</td>
-                <td>{{ row[1] }}</td>
-                <td>{{ row[2] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="table-wrapper">
+            <table>
+                <tr><th>Start Node</th><th>End Node</th><th>Distance</th></tr>
+                {% for row in distances %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
         <h2>Hospital Metadata</h2>
-        <table>
-            <tr>
-                <th>Node ID</th>
-                <th>Phone</th>
-                <th>Capacity</th>
-                <th>Website</th>
-                <th>Specialties</th>
-                <th>Status</th>
-            </tr>
-            {% for row in metadata %}
-            <tr>
-                <td>{{ row[0] }}</td>
-                <td>{{ row[1] }}</td>
-                <td>{{ row[2] }}</td>
-                <td>{{ row[3] }}</td>
-                <td>{{ row[4] }}</td>
-                <td>{{ row[5] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>Node ID</th>
+                    <th>Phone</th>
+                    <th>Capacity</th>
+                    <th>Website</th>
+                    <th>Specialties</th>
+                    <th>Status</th>
+                </tr>
+                {% for row in metadata %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
         <h2>Node Clicks</h2>
-        <table>
-            <tr><th>ID</th><th>Node ID</th><th>Label</th><th>Timestamp</th></tr>
-            {% for row in clicks %}
-            <tr>
-                <td>{{ row[0] }}</td>
-                <td>{{ row[1] }}</td>
-                <td>{{ row[2] }}</td>
-                <td>{{ row[3] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="table-wrapper">
+            <table>
+                <tr><th>ID</th><th>Node ID</th><th>Label</th><th>Timestamp</th></tr>
+                {% for row in clicks %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
         <h2>Abulance Signal</h2>
-        <table>
-            <tr><th>ID</th><th>Node ID</th><th>Action Type</th><th>Timestamp</th></tr>
-            {% for row in actions %}
-            <tr>
-                <td>{{ row[0] }}</td>
-                <td>{{ row[1] }}</td>
-                <td>{{ row[2] }}</td>
-                <td>{{ row[3] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="table-wrapper">
+            <table>
+                <tr><th>ID</th><th>Node ID</th><th>Action Type</th><th>Timestamp</th></tr>
+                {% for row in actions %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
-        <h2>Contact Messages</h2>
-<table>
-    <tr><th>ID</th><th>Name</th><th>Email</th><th>Message</th></tr>
-    {% for row in contacts %}
-    <tr>
-        <td>{{ row[0] }}</td>
-        <td>{{ row[1] }}</td>
-        <td>{{ row[2] }}</td>
-        <td>{{ row[3] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-
+        <!-- Contact Messages Button with Security Prompt -->
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="back-button" onclick="verifyAndRedirect()">📩 View Contact Messages</button>
+        </div>
 
     </div>
+
+    <script>
+        function verifyAndRedirect() {
+            const key = prompt("Enter security key:");
+            if (key === "oi") {
+                window.location.href = "{{ url_for('contacts_page') }}";  // Flask route name
+            } else if (key !== null) {
+                alert("❌ Incorrect security key!");
+            }
+        }
+    </script>
 
 </body>
 </html>

@@ -334,6 +334,16 @@ def dashboard():
                            actions=actions,
                            contacts=contacts)
 
+@app.route('/contactdata')
+def contacts_page():
+    conn = sqlite3.connect('database/contact.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM contact_messages")
+    contacts = cursor.fetchall()
+    conn.close()
+
+    return render_template('contactdata.html', contacts=contacts)
+
 # ========================
 # Main App Runner
 # ========================
