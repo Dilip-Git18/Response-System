@@ -107,7 +107,6 @@ def astr():
     path = []
     start_city = end_city = None
     start = end = None
-    no_path = False  # flag
 
     if request.method == 'POST':
         start_city = request.form['start']
@@ -117,12 +116,9 @@ def astr():
 
         if start and end:
             path = astar(start, end, grid)
-            if not path:
-                no_path = True  # no path found
 
     return render_template('astr.html', grid=grid, path=path, start=start, end=end,
-                           cities=cities, selected_start=start_city, selected_end=end_city,
-                           no_path=no_path)
+                           cities=cities, selected_start=start_city, selected_end=end_city)
 
 
 
@@ -353,3 +349,78 @@ def contacts_page():
 # ========================
 if __name__ == '__main__':
     app.run(debug=True)
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>A* Pathfinding</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/astr.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/aspart.css') }}">
+
+      <!-- Inline CSS for Particles Background -->
+  <style>
+    
+
+  </style>
+
+</head>
+<body>
+      <!-- Particles.js Container -->
+  <div id="particles-js"></div>
+    <h1>A* City Pathfinding</h1>
+
+<form method="POST" action="/astr">
+    <label>Start City:</label>
+    <select name="start" class="city-select" required>
+        {% for city in cities %}
+            <option value="{{ city }}" {% if city == selected_start %}selected{% endif %}>{{ city }}</option>
+        {% endfor %}
+    </select>
+
+    <label>End City:</label>
+    <select name="end" class="city-select" required>
+        {% for city in cities %}
+            <option value="{{ city }}" {% if city == selected_end %}selected{% endif %}>{{ city }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Find Path">
+</form>
+
+
+    <h2>Grid</h2>
+    <table class="grid">
+        {% for y in range(5) %}
+        <tr>
+            {% for x in range(5) %}
+            {% set pos = (x, y) %}
+            {% set cell = grid[pos] %}
+            <td class="{% if pos == start %}start
+                        {% elif pos == end %}end
+                        {% elif pos in path %}path
+                        {% elif cell.obstacle %}obstacle
+                        {% else %}empty{% endif %}">
+                {{ cell.city }}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+
+<div class="legend">
+    <div class="legend-item"><span class="legend-box start"></span> Start</div>
+    <div class="legend-item"><span class="legend-box end"></span> End</div>
+    <div class="legend-item"><span class="legend-box path"></span> Path</div>
+    <div class="legend-item"><span class="legend-box obstacle"></span> Obstacle</div>
+    <div class="legend-item"><span class="legend-box empty"></span> Empty</div>
+</div>
+
+<!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+ <script src="static/js/aspart.js"></script>
+</body>
+</html>
