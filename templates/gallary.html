@@ -1,44 +1,37 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Link to external CSS -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}">
 
+<!-- Slideshow Section -->
 <div class="slideshow-container">
-
+  <div class="mySlides bottom-text-slide">
+    <img src="{{ url_for('static', filename='images/vid1.png') }}" alt="Slide 1">
+    <div class="text-bottom">Always Ready to Assist</div>
+  </div>
 
   <div class="mySlides bottom-text-slide">
-    <img src="static/images/vid1.png" alt="Image 1">
-    <div class="text-bottom">  Always Ready to Assist</div>
+    <img src="{{ url_for('static', filename='images/Amb1.jpg') }}" alt="Slide 2">
+    <div class="text-bottom">Trust in Our Expertise</div>
   </div>
-  
-
-<div class="mySlides bottom-text-slide">
-  <img src="static/images/Amb1.jpg" alt="Image 1">
-  <div class="text-bottom">Trust in Our Expertise</div>
-</div>
-
-
-
-<div class="mySlides">
-  <img src="static/images/vid2.png" alt="Image 2">
-  <div class="text-overlay">Your Support, Anytime</div>
-</div>
 
   <div class="mySlides">
-    <img src="static/images/Amb2.jpg" alt="Image 2">
+    <img src="{{ url_for('static', filename='images/vid2.png') }}" alt="Slide 3">
+    <div class="text-overlay">Your Support, Anytime</div>
+  </div>
+
+  <div class="mySlides">
+    <img src="{{ url_for('static', filename='images/Amb2.jpg') }}" alt="Slide 4">
     <div class="text-overlay">Together, We Can Handle It</div>
   </div>
 
   <div class="mySlides">
-    <img src="static/images/vid3 (1).png" alt="Image 2">
+    <img src="{{ url_for('static', filename='images/vid3 (1).png') }}" alt="Slide 5">
     <div class="text-overlay">Your Safety, Our Priority</div>
   </div>
-
 </div>
 
-
-
+<!-- Slideshow Script -->
 <script>
   let slideIndex = 0;
   const slides = document.getElementsByClassName("mySlides");
@@ -47,32 +40,94 @@
     for (let i = 0; i < slides.length; i++) {
       slides[i].style.display = "none";
     }
-
     slideIndex++;
     if (slideIndex > slides.length) { slideIndex = 1 }
-
     const currentSlide = slides[slideIndex - 1];
     currentSlide.style.display = "block";
-
-    // Check if current slide contains a <video>
     const isVideo = currentSlide.querySelector("video");
-
     if (isVideo) {
-      isVideo.currentTime = 0; // restart video
-      isVideo.play();          // play the video
+      isVideo.currentTime = 0;
+      isVideo.play();
     }
-
-    const delay = isVideo ? 10000 : 4000; // 10 sec for video, 4 sec for images
+    const delay = isVideo ? 10000 : 4000;
     setTimeout(showSlides, delay);
   }
-
-  showSlides(); // Start slideshow
+  showSlides();
 </script>
 
-
+<!-- Blocks Section with Scroll Animation -->
 <div class="view">
-  {% for i in block_range %}
-    <div class="block"></div>
-  {% endfor %}
+
+  <div class="block row">
+    <div class="block-img-container" data-animate="slide-in-left">
+      <img src="{{ url_for('static', filename='gallary/loading.png') }}" alt="Loading" class="block-img">
+    </div>
+    <div class="block-text" data-animate="slide-in-right">
+      <h3>Loading Screen</h3>
+      <p>A visually engaging particle-based loading screen using Particle.js.</p>
+    </div>
+  </div>
+
+  <div class="block row reverse">
+    <div class="block-img-container" data-animate="slide-in-right">
+      <img src="{{ url_for('static', filename='gallary/Home.png') }}" alt="Home" class="block-img">
+    </div>
+    <div class="block-text" data-animate="slide-in-left">
+      <h3>Home Screen</h3>
+      <p>Clean and modern home screen with intuitive layout and responsive design.</p>
+    </div>
+  </div>
+
+  <div class="block row">
+    <div class="block-img-container" data-animate="slide-in-left">
+      <img src="{{ url_for('static', filename='gallary/About.png') }}" alt="About" class="block-img">
+    </div>
+    <div class="block-text" data-animate="slide-in-right">
+      <h3>About</h3>
+      <p>Informative and well-structured About page showcasing purpose and solution.</p>
+    </div>
+  </div>
+
+  <div class="block row reverse">
+    <div class="block-img-container" data-animate="slide-in-right">
+      <img src="{{ url_for('static', filename='gallary/Services.png') }}" alt="Doctor 2" class="block-img">
+    </div>
+    <div class="block-text" data-animate="slide-in-left">
+      <h3>Services</h3>
+      <p>Clear and concise Services page highlighting key offerings and solutions.</p>
+    </div>
+  </div>
+
+  <div class="block row">
+    <div class="block-img-container" data-animate="slide-in-left">
+      <img src="{{ url_for('static', filename='gallary/Short.png') }}" alt="Standby Team" class="block-img">
+    </div>
+    <div class="block-text" data-animate="slide-in-right">
+      <h3>Shortest Path</h3>
+      <p>24/7 availability for all emergency needs.</p>
+    </div>
+  </div>
+
 </div>
+
+<!-- Scroll Animation Script -->
+<script>
+function animateOnScroll() {
+  const elements = document.querySelectorAll('[data-animate]');
+  elements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    // Adjust threshold for when the animation triggers
+    if (rect.top <= window.innerHeight * 0.85 && rect.bottom >= 0) {
+      el.classList.add('visible');
+    } else {
+      el.classList.remove('visible');
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', animateOnScroll);
+window.addEventListener('scroll', animateOnScroll);
+
+</script>
+
 {% endblock %}
