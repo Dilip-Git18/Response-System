@@ -63,10 +63,14 @@
 
 /* Block Section */
 .view {
+  max-width: 1200px;      /* max width for large screens */
+  margin: 0 auto;         /* centers the container horizontally */
+  padding: 20px;          /* some padding around content */
+  box-sizing: border-box; /* include padding in width */
   display: flex;
   flex-direction: column;
-  gap: 40px;
-  margin-top: 40px;
+  align-items: center;    /* center all child blocks horizontally */
+  gap: 40px;              /* space between each .block */
 }
 .block.row {
   display: flex;
@@ -150,5 +154,39 @@
   }
   .block-text {
     text-align: center;
+  }
+}
+
+/* Make sure .block rows don't stretch full width, center them */
+.block.row, .block.row.reverse {
+  width: 100%;            /* take full width of .view */
+  max-width: 900px;       /* limit max width for readability */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;        /* allow wrapping on smaller screens */
+  gap: 20px;
+}
+
+/* Reverse the flex direction for .reverse class */
+.block.row.reverse {
+  flex-direction: row-reverse;
+}
+
+/* For images and text containers */
+.block-img-container, .block-text {
+  flex: 1 1 45%;          /* grow and shrink, base 45% width */
+  min-width: 280px;       /* minimum width on small devices */
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .block.row, .block.row.reverse {
+    flex-direction: column !important; /* stack vertically on small screens */
+  }
+
+  .block-img-container, .block-text {
+    flex: 1 1 100%;
+    min-width: 100%;
   }
 }
