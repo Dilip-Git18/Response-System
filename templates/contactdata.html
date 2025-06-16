@@ -26,9 +26,12 @@
             </table>
         </div>
 
-        <p>
-            <a href="{{ url_for('dashboard') }}" class="back-button">← Back to Dashboard</a>
-        </p>
+    <p style="display: flex; justify-content: space-between; align-items: center">
+    <a href="{{ url_for('dashboard') }}" class="back-button">← Back to  Dashboard</a>
+    <a href="{{ url_for('logout') }}" class="logout-button">🔓 Logout</a>
+    </p>
+
+
     </div>
 </body>
 </html>

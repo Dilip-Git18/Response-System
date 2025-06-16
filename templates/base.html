@@ -10,19 +10,10 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/sigpart.css') }}">
 
   <!-- Inline CSS for Particles Background -->
-  <style>
-    #particles-js {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      top: 0;
-      left: 0;
-      background-color: #acc3f3; /* Optional: change for dark/light theme */
-    }
-  </style>
+
 </head>
 <body>
 
@@ -54,78 +45,25 @@
     </div>
   </nav>
 
-  <!-- Main Content Section -->
+<!-- Main Content Section -->
   <div class="container mt-5">
     {% block content %}
     {% endblock %}
   </div>
 
-  <!-- Footer Section -->
-  <footer class="text-white text-center py-4 mt-5" style="background-color: #40769f;">
+<!-- Footer Section -->
+<footer class="text-white text-center py-3 mt-5" style="background-color: #40769f; font-size: 0.95rem; line-height: 1.4;">
+  <p class="mb-1 mb-md-0">&copy; 2025 HealthyCare Ambulance. All rights reserved.</p>
+  <p class="mb-0">Designed <i class="bi bi-heart-fill"></i> by our Team</p>
+</footer>
 
-    <p class="mb-0">&copy; 2025 HealthyCare Ambulance. All rights reserved.</p>
-    <p>Designed <i class="bi bi-heart-fill"></i> by our Team</p>
-  </footer>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-
-  <!-- Particles Initialization -->
-  <script>
-    particlesJS("particles-js", {
-      "particles": {
-        "number": {
-          "value": 80,
-          "density": { "enable": true, "value_area": 800 }
-        },
-        "color": { "value": "#ffffff" },
-        "shape": {
-          "type": "circle",
-          "stroke": { "width": 0, "color": "#000000" }
-        },
-        "opacity": {
-          "value": 0.5,
-          "random": false
-        },
-        "size": {
-          "value": 3,
-          "random": true
-        },
-        "line_linked": {
-          "enable": true,
-          "distance": 150,
-          "color": "#ffffff",
-          "opacity": 0.4,
-          "width": 1
-        },
-        "move": {
-          "enable": true,
-          "speed": 2,
-          "direction": "none",
-          "out_mode": "out"
-        }
-      },
-      "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-          "onhover": { "enable": true, "mode": "repulse" },
-          "onclick": { "enable": true, "mode": "push" },
-          "resize": true
-        }
-      },
-      "retina_detect": true
-    });
-  </script>
-
-  <!-- Open /dashboard in new tab -->
-  <script>
-    document.querySelector('a.nav-link[href="/dashboard"]').addEventListener('click', function(e) {
-      e.preventDefault();
-      window.open(this.href, '_blank');
-    });
-  </script>
+<!-- Particles Initialization -->
+<script src="static/js/sigpart.js"></script>
 
 </body>
 </html>

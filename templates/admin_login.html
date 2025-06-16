@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .login-container {
+    max-width: 400px;
+    margin-top: 80px;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  .login-container h3 {
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #333;
+    text-align: center;
+  }
+  .form-label {
+    font-weight: 600;
+  }
+  .btn-primary {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+  }
+  .alert {
+    font-weight: 600;
+  }
+</style>
+
+<div class="container d-flex justify-content-center">
+  <div class="login-container">
+    <h3>Admin Login</h3>
+    <form method="POST" novalidate>
+      <div class="mb-4">
+        <label for="key" class="form-label">Enter Security Key</label>
+        <input type="password" name="key" class="form-control form-control-lg" id="key" required autofocus>
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-danger mt-3 text-center">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+  </div>
+</div>
+{% endblock %}

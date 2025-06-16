@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify,flash
+from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify,flash,session
 import sqlite3
 import heapq
 
@@ -340,6 +340,9 @@ def dashboard():
 
 @app.route('/contactdata')
 def contacts_page():
+    if not session.get('authorized'):
+        return redirect('/admin_login')
+
     conn = sqlite3.connect('database/contact.db')
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM contact_messages")
@@ -347,6 +350,24 @@ def contacts_page():
     conn.close()
 
     return render_template('contactdata.html', contacts=contacts)
+
+@app.route('/admin_login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        key = request.form['key']
+        if key == 'uu':
+            session['authorized'] = True
+            return redirect('/contactdata')
+        else:
+            flash("Invalid security key.")
+    return render_template('admin_login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('authorized', None)  # Remove the 'authorized' flag
+    flash('You have been logged out.')
+    return redirect('/admin_login')  # Redirect to login page
+
 
 # ========================
 # Main App Runner

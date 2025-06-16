@@ -1,25 +1,29 @@
 /* Center the main header content */
+/* Center the main header content */
 .services-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px; /* slightly less space */
 }
 
 .services-header h2 {
-  font-size: 2.5rem;
-  color: #40769f; /* Use your primary color */
+  font-size: 1.8rem;  /* smaller heading */
+  color: #40769f; /* primary color */
+  margin-bottom: 10px;
 }
 
 .services-header p {
-  font-size: 1.2rem;
+  font-size: 1rem;  /* smaller paragraph */
   color: #555;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-.img-fluid {
+.services-header img.img-fluid {
   display: block;
   margin: 0 auto;
-  max-width: 100%;  /* Ensures it resizes well on smaller screens */
+  max-width: 320px;  /* smaller image */
+  height: auto;
 }
+
 
 /* Button Cards Layout */
 .button-grid {

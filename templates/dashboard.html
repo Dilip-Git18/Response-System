@@ -80,23 +80,14 @@
             </table>
         </div>
 
-        <!-- Contact Messages Button with Security Prompt -->
-        <div style="text-align: center; margin-top: 30px;">
-            <button class="back-button" onclick="verifyAndRedirect()">📩 View Contact Messages</button>
-        </div>
+<!-- Contact Messages Button -->
+<div style="text-align: center; margin-top: 30px;">
+    <a href="/admin_login">
+        <button class="back-button">📩 View Contact Messages</button>
+    </a>
+</div>
 
-    </div>
 
-    <script>
-        function verifyAndRedirect() {
-            const key = prompt("Enter security key:");
-            if (key === "oi") {
-                window.location.href = "{{ url_for('contacts_page') }}";  // Flask route name
-            } else if (key !== null) {
-                alert("❌ Incorrect security key!");
-            }
-        }
-    </script>
 
 </body>
 </html>

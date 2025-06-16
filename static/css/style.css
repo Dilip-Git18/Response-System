@@ -1,12 +1,26 @@
-body {
-  background-color: linear-gradient(to right, #f0f0f0, #e6f7ff);
-}
-
-h1, h2 {
-  color: #bbd802;
-}
-
 img {
   margin-top: 20px;
   border-radius: 10px;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Your main content container grows to fill space */
+.container.mt-5 {
+  flex: 1 0 auto;
+}
+
+/* Footer stays at bottom */
+footer {
+  flex-shrink: 0;
 }
