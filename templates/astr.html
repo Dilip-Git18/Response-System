@@ -38,11 +38,12 @@
       </div>
     {% endif %}
 
-    <h2>Grid</h2>
+<h2>Grid</h2>
+<div class="grid-container">
     <table class="grid">
-        {% for y in range(5) %}
+        {% for y in range(10) %}
         <tr>
-            {% for x in range(5) %}
+            {% for x in range(10) %}
             {% set pos = (x, y) %}
             {% set cell = grid[pos] %}
             <td class="{% if pos == start %}start
@@ -56,6 +57,8 @@
         </tr>
         {% endfor %}
     </table>
+</div>
+
 
     <div class="legend">
         <div class="legend-item"><span class="legend-box start"></span> Start</div>

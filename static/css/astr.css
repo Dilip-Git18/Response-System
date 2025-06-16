@@ -1,3 +1,4 @@
+/* ===== BASE STYLING ===== */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f7f9;
@@ -36,19 +37,27 @@ input[type="submit"]:hover {
     background-color: #2980b9;
 }
 
-table {
+/* ===== GRID TABLE ===== */
+.grid-container {
+    overflow-x: auto;
+    max-width: 100%;
+    padding-bottom: 10px;
+}
+
+.grid {
     margin: 0 auto;
     border-collapse: separate;
-    border-spacing: 8px; /* space between cells */
+    border-spacing: 10px; /* increased spacing */
+    width: max-content;
 }
 
 td {
-    width: 60px;
-    height: 60px;
+    width: 60px;          /* increased from 40px */
+    height: 60px;         /* increased from 40px */
     text-align: center;
     vertical-align: middle;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 14px;      /* slightly increased */
     border-radius: 12px;
     transition: transform 0.2s;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -59,7 +68,7 @@ td:hover {
     transform: scale(1.05);
 }
 
-/* Cell types */
+/* ===== CELL COLORS ===== */
 .empty {
     background-color: #ffffff;
     border: 2px solid #ddd;
@@ -85,14 +94,7 @@ td:hover {
     color: black;
 }
 
-/* Enhance select dropdowns (if using Select2) */
-.select2-container .select2-selection--single {
-    height: 40px;
-    padding: 5px 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
+/* ===== LEGEND ===== */
 .legend {
     display: flex;
     justify-content: center;
@@ -117,14 +119,13 @@ td:hover {
     border: 1px solid #ccc;
 }
 
-/* Use the same colors as your grid cells */
 .legend-box.start { background-color: #2ecc71; }
 .legend-box.end { background-color: #e74c3c; }
 .legend-box.path { background-color: #f1c40f; }
 .legend-box.obstacle { background-color: #2f3640; }
 .legend-box.empty { background-color: #ffffff; border: 1px solid #ddd; }
 
-/* Responsive adjustments */
+/* ===== RESPONSIVE MEDIA QUERIES ===== */
 @media screen and (max-width: 768px) {
     body {
         padding: 15px;
@@ -146,15 +147,10 @@ td:hover {
         font-size: 15px;
     }
 
-    table.grid {
-        border-spacing: 4px;
-    }
-
     td {
-        width: 40px;
-        height: 40px;
-        font-size: 12px;
-        border-radius: 8px;
+        width: 50px;
+        height: 50px;
+        font-size: 13px;
     }
 
     .legend {
@@ -184,9 +180,9 @@ td:hover {
     }
 
     td {
-        width: 30px;
-        height: 30px;
-        font-size: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 11px;
     }
 
     select, input[type="submit"] {
@@ -195,12 +191,13 @@ td:hover {
     }
 }
 
+/* ===== WARNING ===== */
 .warning {
-  color: #b00020;
-  background-color: #fddede;
-  border: 1px solid #b00020;
-  padding: 10px;
-  margin: 15px 0;
-  border-radius: 4px;
-  font-weight: bold;
+    color: #b00020;
+    background-color: #fddede;
+    border: 1px solid #b00020;
+    padding: 10px;
+    margin: 15px 0;
+    border-radius: 4px;
+    font-weight: bold;
 }
