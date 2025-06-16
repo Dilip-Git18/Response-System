@@ -9,26 +9,40 @@
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
+
   .login-container h3 {
     font-weight: 700;
     margin-bottom: 30px;
     color: #333;
     text-align: center;
   }
+
   .form-label {
     font-weight: 600;
   }
-  .btn-primary {
+
+  /* Custom button styling */
+  .custom-login-btn {
     width: 100%;
     padding: 10px;
     font-size: 1.1rem;
     border-radius: 8px;
+    background-color: #40769f; /* Green */
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
   }
+
+  .custom-login-btn:hover {
+    background-color: #2e5976; /* Darker green on hover */
+  }
+
   .alert {
     font-weight: 600;
   }
 </style>
 
+<!-- Form with custom button -->
 <div class="container d-flex justify-content-center">
   <div class="login-container">
     <h3>Admin Login</h3>
@@ -37,7 +51,7 @@
         <label for="key" class="form-label">Enter Security Key</label>
         <input type="password" name="key" class="form-control form-control-lg" id="key" required autofocus>
       </div>
-      <button type="submit" class="btn btn-primary">Login</button>
+      <button type="submit" class="custom-login-btn">Login</button>
     </form>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -46,4 +60,5 @@
     {% endwith %}
   </div>
 </div>
+
 {% endblock %}
