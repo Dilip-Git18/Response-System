@@ -7,23 +7,27 @@
     <p>Meet our experienced and compassionate Project team.</p>
 
     <div class="member-grid">
-        <div class="member-card">
-            <img src="{{ url_for('static', filename='images/doc1.jpg') }}" alt="Dr. Alex Morgan">
-            <h3>Dr. Alex Morgan</h3>
-            <p>Lead Developer</p>
-        </div>
-
-        <div class="member-card">
-            <img src="{{ url_for('static', filename='images/Doc2.jpg') }}" alt="Sarah Lee">
-            <h3>Cristalia Flinn</h3>
-            <p>Data Analyst</p>
-        </div>
-
-        <div class="member-card">
-            <img src="{{ url_for('static', filename='images/Doc3.avif') }}" alt="John Carter">
-            <h3>Joe Kettleburg</h3>
-            <p>System Engineer</p>
-        </div>
+    <div class="member-card">
+        <img src="{{ url_for('static', filename='images/Lead.png') }}" alt="Lead">
+        <h3>Dilip</h3>
+        <p>Lead Developer</p>
+        <p>UI/UX Design – Backend and Frontend Integration – Map Integration</p>
     </div>
+
+    <div class="member-card">
+        <img src="{{ url_for('static', filename='images/mem1.png') }}" alt="mem-1">
+        <h3>Manshi</h3>
+        <p>System Engineer</p>
+        <p>Flask – Algorithm Implementation – Optimization</p>
+    </div>
+
+    <div class="member-card">
+        <img src="{{ url_for('static', filename='images/mem2.png') }}" alt="Mem-2">
+        <h3>Nandini</h3>
+        <p>Data Analyst</p>
+        <p>Database Management Deployment - System Testing</p>
+    </div>
+</div>
+
 </div>
 {% endblock %}

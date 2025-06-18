@@ -51,25 +51,17 @@ h2 {
     margin-top: 0;
 }
 
-/* Responsive Layout */
+
+/* Mobile View: Extra Large Container */
 @media (max-width: 768px) {
     .container {
-        
-        padding: 150px;
-        align-items: center;
+        width: 100vw;             /* Full viewport width */
+        max-width: 100%;          /* Remove max-width constraints */
+        padding: 30px 10px;       /* Optional: more padding for better UX */
+        flex-direction: column;   /* Stack items vertically */
+        align-items: stretch;     /* Stretch to full width */
     }
 
-    #network {
-        height: 400px;
-    }
-
-    #info-box {
-        width: 100%;
-        margin-left: 0;
-    }
-}
-
-@media (max-width: 480px) {
     h2 {
         font-size: 20px;
     }
