@@ -4,30 +4,59 @@
 
 <div class="members-container">
     <h2>Our Members</h2>
-    <p>Meet our experienced and compassionate Project team.</p>
+    <p>Meet our experienced and compassionate project team.</p>
 
     <div class="member-grid">
-    <div class="member-card">
-        <img src="{{ url_for('static', filename='images/Lead.png') }}" alt="Lead">
-        <h3>Dilip</h3>
-        <p>Lead Developer</p>
-        <p>UI/UX Design – Backend and Frontend Integration – Map Integration</p>
-    </div>
 
-    <div class="member-card">
-        <img src="{{ url_for('static', filename='images/mem1.png') }}" alt="mem-1">
-        <h3>Manshi</h3>
-        <p>System Engineer</p>
-        <p>Flask – Algorithm Implementation – Optimization</p>
-    </div>
+        <!-- Member 1 -->
+        <div class="member-card">
+{% if session.get('authorized') %}
+    <img src="{{ url_for('static', filename='images/Lead.png') }}" alt="Dilip">
+{% else %}
+    <a href="{{ url_for('contact') }}" style="text-decoration: none; color: inherit;">
+        <div class="placeholder-img" style="cursor: pointer;">
+            <span class="lock-icon">🔒</span>
+            <span class="lock-text">Photo hidden</span>
+            <span class="lock-text">Ask Admin</span>
+        </div>
+    </a>
+{% endif %}
+<h3>Dilip</h3>
+<p>Lead Developer</p>
+<p>UI/UX Design – Backend and Frontend Integration – Map Integration</p>
 
-    <div class="member-card">
-        <img src="{{ url_for('static', filename='images/mem2.png') }}" alt="Mem-2">
-        <h3>Nandini</h3>
-        <p>Data Analyst</p>
-        <p>Database Management Deployment - System Testing</p>
-    </div>
-</div>
+        </div>
 
+        <!-- Member 2 -->
+        <div class="member-card">
+            {% if session.get('authorized') %}
+                <img src="{{ url_for('static', filename='images/mem1.png') }}" alt="Manshi">
+            {% else %}
+                <div class="placeholder-img">
+                    <span class="lock-icon">🔒</span>
+                    <span class="lock-text">Photo hidden</span>
+                </div>
+            {% endif %}
+            <h3>Manshi</h3>
+            <p>System Engineer</p>
+            <p>Flask – Algorithm Implementation – Optimization</p>
+        </div>
+
+        <!-- Member 3 -->
+        <div class="member-card">
+            {% if session.get('authorized') %}
+                <img src="{{ url_for('static', filename='images/mem2.png') }}" alt="Nandini">
+            {% else %}
+                <div class="placeholder-img">
+                    <span class="lock-icon">🔒</span>
+                    <span class="lock-text">Photo hidden</span>
+                </div>
+            {% endif %}
+            <h3>Nandini</h3>
+            <p>Data Analyst</p>
+            <p>Database Management – Deployment – System Testing</p>
+        </div>
+
+    </div>
 </div>
 {% endblock %}

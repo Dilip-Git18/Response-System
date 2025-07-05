@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify,flash,session
 import sqlite3
 import heapq
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 
@@ -48,7 +49,6 @@ def dijkstra(start, end):
                 heapq.heappush(pq, (distance, neighbor))
 
     return float("inf"), []
-
 
 # ========================
 # A* Algorithm
@@ -355,7 +355,15 @@ def contacts_page():
 def admin_login():
     if request.method == 'POST':
         key = request.form['key']
-        if key == 'uu':
+
+        # Check hashed key in admin_auth.db
+        conn = sqlite3.connect('database/admin_auth.db')
+        c = conn.cursor()
+        c.execute("SELECT key_hash FROM admin_keys LIMIT 1")
+        row = c.fetchone()
+        conn.close()
+
+        if row and check_password_hash(row[0], key):
             session['authorized'] = True
             return redirect('/contactdata')
         else:

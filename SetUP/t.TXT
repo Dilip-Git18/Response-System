@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="contact-container" style="max-width:600px; margin:auto; background:white; padding:30px 40px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+  <h2 style="color:#40769f; margin-bottom:20px;">Contact Us</h2>
+  <p>Email: <a href="mailto:info@healthycare.com" style="color:#40769f;">info@healthycare.com</a> | Phone: <a href="tel:+1234567890" style="color:#40769f;">+123 456 7890</a></p>
+
+  <!-- Message display area -->
+  <div id="form-status-message"></div>
+
+  <form name="submit-to-google-sheet" novalidate>
+    <div class="mb-3">
+      <label for="name" class="form-label">Your Name</label>
+      <input type="text" id="name" class="form-control" name="Name" placeholder="Enter your name">
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Your Email</label>
+      <input type="email" id="email" class="form-control" name="Email" placeholder="Enter your email" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="message" class="form-label">Your Message</label>
+      <textarea id="message" class="form-control" name="Message" rows="5" placeholder="Write your message here..."></textarea>
+    </div>
+
+    <button class="btn btn-primary w-100" 
+            style="background-color: #40769f; border: 2px solid #3a728b; color: white; transition: transform 0.1s ease, background-color 0.3s ease, border-color 0.3s ease;" 
+            type="submit" 
+            onmousedown="this.style.transform='scale(0.95)'" 
+            onmouseup="this.style.transform='scale(1)'" 
+            onmouseleave="this.style.transform='scale(1)'">
+      Send Message
+    </button>
+  </form>
+</div>
+
+<!-- Scripts -->
+<script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbzFgLvx4hs5_goSpARD4kX16geycGryxdoINHK9HwiYVok2Vdj5LycGvO0_kUBSMHmQ6A/exec';
+  const form = document.forms['submit-to-google-sheet'];
+  const statusMessage = document.getElementById('form-status-message');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if (!name || !email || !message) {
+      showStatus('Please fill in all fields before submitting.', 'danger');
+      return;
+    }
+
+    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+      .then(response => {
+        showStatus('Success! Your message has been sent.', 'success');
+        form.reset();
+      })
+      .catch(error => {
+        showStatus('❌ Error! Please try again later.', 'danger');
+        console.error('Error!', error.message);
+      });
+  });
+
+  function showStatus(message, type) {
+    statusMessage.innerHTML = `
+      <div class="custom-alert alert alert-${type} alert-dismissible fade show" role="alert" style="
+        border: 1px solid ${type === 'success' ? '#198754' : '#dc3545'};
+        background-color: ${type === 'success' ? '#d1e7dd' : '#f8d7da'};
+        color: ${type === 'success' ? '#0f5132' : '#842029'};
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        animation: fadeInSlideDown 0.4s ease-out;
+      ">
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+  }
+
+  // Animation for message
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes fadeInSlideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+{% endblock %}
